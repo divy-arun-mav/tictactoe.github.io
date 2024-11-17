@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Online HTML Editor</title>
+    <style>
+        #box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            border: 2px solid black;
+            background-color: black;
+            padding: 10px;
+            width: 300px;
+            height: 300px;
+            border-radius: 5px;
+        }
+
+        .sub-box {
+            border: 2px solid black;
+            background-color: white;
+            width: 100px;
+            height: 100px;
+            margin: 2px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 2em;
+            cursor: pointer;
+        }
+
+        #row {
+            display: flex;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Tic Tac Toe</h1>
+    <p>X plays first, then 0</p>
+    <div id="box">
+        <div id="row">
+            <input type="text" class="sub-box" id="sub-box-1" maxlength="1" readonly>
+            <input type="text" class="sub-box" id="sub-box-2" maxlength="1" readonly>
+            <input type="text" class="sub-box" id="sub-box-3" maxlength="1" readonly>
+        </div>
+        <div id="row">
+            <input type="text" class="sub-box" id="sub-box-4" maxlength="1" readonly>
+            <input type="text" class="sub-box" id="sub-box-5" maxlength="1" readonly>
+            <input type="text" class="sub-box" id="sub-box-6" maxlength="1" readonly>
+        </div>
+        <div id="row">
+            <input type="text" class="sub-box" id="sub-box-7" maxlength="1" readonly>
+            <input type="text" class="sub-box" id="sub-box-8" maxlength="1" readonly>
+            <input type="text" class="sub-box" id="sub-box-9" maxlength="1" readonly>
+        </div>
+    </div>
+    <script>
+        const rows = [
+            ['sub-box-1', 'sub-box-2', 'sub-box-3'],
+            ['sub-box-4', 'sub-box-5', 'sub-box-6'],
+            ['sub-box-7', 'sub-box-8', 'sub-box-9']
+        ];
+
+        const columns = [
+            ['sub-box-1', 'sub-box-4', 'sub-box-7'],
+            ['sub-box-2', 'sub-box-5', 'sub-box-8'],
+            ['sub-box-3', 'sub-box-6', 'sub-box-9']
+        ];
+
+        const diagonals = [
+            ['sub-box-1', 'sub-box-5', 'sub-box-9'],
+            ['sub-box-3', 'sub-box-5', 'sub-box-7']
+        ];
+
+        let X = []; // Track X moves
+        let O = []; // Track O moves
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const subBoxes = document.querySelectorAll('.sub-box');
+            let count = 1; // Track turns
+
+            subBoxes.forEach((box) => {
+                box.addEventListener('click', (event) => {
+                    const target = event.target;
+
+                    if (target.value === '') {
+                        const currentPlayer = count % 2 === 0 ? '0' : 'X';
+                        target.value = currentPlayer;
+
+                        if (currentPlayer === 'X') {
+                            X.push(target.id);
+                        } else {
+                            O.push(target.id);
+                        }
+
+                        count++;
+
+                        if (checkWinner(X)) {
+                            setTimeout(() => {
+                                alert('Player X wins!');
+                                resetBoard();
+                            }, 200);
+                        } else if (checkWinner(O)) {
+                            setTimeout(() => {
+                                alert('Player O wins!');
+                                resetBoard();
+                            }, 200);
+                        } else if (count > 9) {
+                            setTimeout(() => {
+                                alert('It\'s a draw!');
+                                resetBoard();
+                            }, 200);
+                        }
+                    }
+                });
+            });
+        });
+
+        function checkWinner(playerMoves) {
+            const winningCombinations = [...rows, ...columns, ...diagonals];
+            return winningCombinations.some(combination =>
+                combination.every(box => playerMoves.includes(box))
+            );
+        }
+
+        function resetBoard() {
+            const subBoxes = document.querySelectorAll('.sub-box');
+            subBoxes.forEach(box => box.value = '');
+            X = [];
+            O = [];
+            count = 1;
+        }
+    </script>
+</body>
+
+</html>
